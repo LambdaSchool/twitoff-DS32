@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from .models import DB, User, Tweet
+from .twitter import add_or_update_user, get_all_usernames
 
 
 def create_app():
@@ -21,6 +22,14 @@ def create_app():
         users = User.query.all()
         #what I want to happen when somebody goes to home page
         return render_template('base.html', title="Home", users=users)
+
+    @app.route('/update')
+    def update():
+        '''update all users'''
+        usernames = get_all_usernames()
+        for username in usernames:
+            add_or_update_user(username)
+        return "updated"
 
     @app.route('/populate')
     def populate():
@@ -49,8 +58,5 @@ def create_app():
         <a href='/'>Go to Home</a>
         <a href='/reset'>Go to reset</a>
         <a href='/populate'>Go to populate</a>'''
-
-
-
 
     return app
